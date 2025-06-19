@@ -5,13 +5,11 @@ const User = require('./models/user')
 // app.use('/', (req, res) => {
 //     res.send('hello')
 // });
-
+app.use(express.json());
 app.post('/signup', async (req, res) => {
+    const { firstName, lastName, age, gender } = req.body;
     const user = new User({
-        firstName: 'rakesh',
-        lastName: 'reddy',
-        age: 20,
-        gender: 'male',
+        firstName, lastName, age, gender
     });
     await user.save();
     res.send("data added sucessfully!.")
