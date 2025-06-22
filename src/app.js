@@ -2,15 +2,23 @@ const express = require('express');
 const connectDB = require('./config/database');
 const app = express();
 const User = require('./models/user')
+const { validateSignUp } = require('./utils/validation')
 // app.use('/', (req, res) => {
 //     res.send('hello')
 // });
 app.use(express.json());
 app.post('/signup', async (req, res) => {
     // const { firstName, lastName, age, gender } = req.body;
-    const user = new User(req.body);
-    await user.save();
-    res.send("data added sucessfully!.")
+    try {
+        validateSignUp(req)
+        console.log('done')
+        const user = new User(req.body);
+        await user.save();
+        res.send("data added sucessfully!.")
+    } catch (err) {
+        res.status(500).send("invalid data" + err)
+    }
+
 })
 app.get('/get', async (req, res) => {
     try {
@@ -39,11 +47,14 @@ app.delete('/delete', async (req, res) => {
         res.status(400).send("not found" + err)
     }
 })
-app.update('/update', async (req, res) => {
+app.patch('/update', async (req, res) => {
     try {
-        const id = req.body.emailId;
-        const users = await User.findOneAndDelete({ emailId: id })
-        res.send('deleted successfully..')
+        const id = req.body;
+        console.log(id)
+        const { firstName } = req.body
+        const data = { firstName }
+        await User.findByIdAndUpdate(id, data)
+        res.send('updated suceesfully..')
     } catch (err) {
         res.status(400).send("not found" + err)
     }
