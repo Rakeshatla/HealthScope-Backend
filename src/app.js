@@ -65,6 +65,7 @@ app.patch('/update', async (req, res) => {
         res.status(400).send("not found" + err)
     }
 })
+console.log('d')
 connectDB().then(() => {
     console.log('connected to db sucessfully..');
     app.listen(8000, () => {
